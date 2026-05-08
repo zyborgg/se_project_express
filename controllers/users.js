@@ -1,7 +1,5 @@
-// CONTROLLER
-const mongoose = require("mongoose");
-const express = require("express");
 const User = require("../models/user");
+
 const ERROR = require("../utils/errors");
 
 // Get all users

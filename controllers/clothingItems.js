@@ -1,7 +1,5 @@
-// CONTROLLER
-const mongoose = require("mongoose");
-const express = require("express");
 const ClothingItems = require("../models/clothingItem");
+
 const ERROR = require("../utils/errors");
 
 // get all items
@@ -14,11 +12,10 @@ module.exports.getClothingItems = (req, res) => {
         return res
           .status(ERROR.ERROR_CODE_400)
           .send({ message: "Invalid data provided" });
-      } else {
-        return res
-          .status(ERROR.ERROR_CODE_500)
-          .send({ message: "An error has occurred on the server" });
       }
+      return res
+        .status(ERROR.ERROR_CODE_500)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -38,11 +35,10 @@ module.exports.createClothingItem = (req, res) => {
         return res
           .status(ERROR.ERROR_CODE_400)
           .send({ message: "Invalid data provided" });
-      } else {
-        return res
-          .status(ERROR.ERROR_CODE_500)
-          .send({ message: "An error has occurred on the server" });
       }
+      return res
+        .status(ERROR.ERROR_CODE_500)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -52,7 +48,7 @@ module.exports.deleteClothingItem = (req, res) => {
 
   ClothingItems.findByIdAndDelete(itemId)
     .orFail()
-    .then((clothingItem) => {
+    .then(() => {
       res.status(200).send({ message: "Item deleted successfully" });
     })
     .catch((err) => {
@@ -106,12 +102,12 @@ module.exports.likeClothingItem = (req, res) => {
 module.exports.dislikeClothingItem = (req, res) =>
   ClothingItems.findByIdAndUpdate(
     req.params.itemId,
-    { $pull: { likes: req.user._id } }, // remove _id from the array
+    { $pull: { likes: req.user._id } },
     { new: true }
   )
     .orFail()
     .then((updatedItem) => {
-      res.status(200).send(updatedItem);
+      res.status(200).send({ data: updatedItem });
     })
     .catch((err) => {
       console.error(err);
