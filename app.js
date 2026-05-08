@@ -4,6 +4,7 @@ const { PORT = 3001 } = process.env;
 const app = express();
 
 mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");
+app.use(express.json());
 
 app.use((req, res, next) => {
   req.user = {
@@ -12,9 +13,14 @@ app.use((req, res, next) => {
   next();
 });
 
-module.exports.createClothingItem = (req, res) => {
-  console.log(req.user._id); // _id will become accessible
-};
+const User = require("./routes/users");
+const ClothingItems = require("./routes/clothingItems");
+app.use("/users", User);
+app.use("/clothing-items", ClothingItems);
+
+app.use((req, res) => {
+  res.status(404).json({ message: "Requested resource not found" });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

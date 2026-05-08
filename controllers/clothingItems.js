@@ -24,6 +24,7 @@ module.exports.getClothingItems = (req, res) => {
 
 // create new item
 module.exports.createClothingItem = (req, res) => {
+  console.log(req.user._id);
   ClothingItems.create({
     name: req.body.name,
     weather: req.body.weather,
