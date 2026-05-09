@@ -27,9 +27,7 @@ module.exports.createClothingItem = (req, res) => {
     imageUrl: req.body.imageUrl,
     owner: req.user._id,
   })
-    .then((clothingItem) => {
-      return ClothingItems.findById(clothingItem._id).populate("owner");
-    })
+    .then((clothingItem) => ClothingItems.findById(clothingItem._id).populate("owner"))
     .then((populatedItem) => res.send({ data: populatedItem }))
     .catch((err) => {
       console.error(err);
@@ -50,9 +48,7 @@ module.exports.deleteClothingItem = (req, res) => {
 
   ClothingItems.findByIdAndDelete(id)
     .orFail()
-    .then(() => {
-      return res.status(200).send({ message: "Item deleted successfully" });
-    })
+    .then(() => res.status(200).send({ message: "Item deleted successfully" }))
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
