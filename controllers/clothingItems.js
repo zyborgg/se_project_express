@@ -1,5 +1,3 @@
-const User = require("../models/user");
-
 const ClothingItems = require("../models/clothingItem");
 
 const ERROR = require("../utils/errors");
@@ -22,29 +20,6 @@ module.exports.getClothingItems = (req, res) => {
 };
 
 // create new item
-// module.exports.createClothingItem = (req, res) => {
-//   console.log("req.body:", req.body);
-
-//   ClothingItems.create({
-//     name: req.body.name,
-//     weather: req.body.weather,
-//     imageUrl: req.body.imageUrl,
-//     owner: req.user._id,
-//   })
-//     .then((clothingItem) => res.send({ data: clothingItem }))
-//     .catch((err) => {
-//       console.error(err);
-//       if (err.name === "ValidationError") {
-//         return res
-//           .status(ERROR.ERROR_CODE_400)
-//           .send({ message: "Invalid data provided" });
-//       }
-//       return res
-//         .status(ERROR.ERROR_CODE_500)
-//         .send({ message: "An error has occurred on the server" });
-//     });
-// };
-
 module.exports.createClothingItem = (req, res) => {
   ClothingItems.create({
     name: req.body.name,

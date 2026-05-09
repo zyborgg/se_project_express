@@ -13,11 +13,11 @@ module.exports.getUsers = (req, res) => {
         return res
           .status(ERROR.ERROR_CODE_400)
           .send({ message: "Invalid data provided" });
-      } else {
+      } 
         return res
           .status(ERROR.ERROR_CODE_500)
           .send({ message: "An error has occurred on the server" });
-      }
+      
     });
 };
 
@@ -58,10 +58,10 @@ module.exports.createUser = (req, res) => {
         return res
           .status(ERROR.ERROR_CODE_400)
           .send({ message: "Invalid data provided" });
-      } else {
+      } 
         return res
           .status(ERROR.ERROR_CODE_500)
           .send({ message: "An error has occurred on the server" });
-      }
+      
     });
 };
