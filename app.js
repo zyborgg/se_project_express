@@ -6,6 +6,8 @@ const { PORT = 3001 } = process.env;
 
 const app = express();
 
+const ERROR = require("./utils/errors");
+
 mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");
 app.use(express.json());
 
@@ -24,7 +26,9 @@ app.use("/users", User);
 app.use("/items", ClothingItems);
 
 app.use((req, res) => {
-  res.status(404).json({ message: "Requested resource not found" });
+  res
+    .status(ERROR.ERROR_CODE_400)
+    .json({ message: "Requested resource not found" });
 });
 
 app.listen(PORT, () => {

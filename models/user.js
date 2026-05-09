@@ -5,8 +5,8 @@ const UserSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    minLength: 2,
-    maxLength: 30,
+    minlength: 2,
+    maxlength: 30,
   },
   avatar: {
     type: String,
