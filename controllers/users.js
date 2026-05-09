@@ -5,7 +5,8 @@ const ERROR = require("../utils/errors");
 // Get all users
 module.exports.getUsers = (req, res) => {
   User.find({})
-    .then((users) => res.send({ data: users }))
+    .orFail()
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       console.error(err);
       if (err.name === "TypeError") {
@@ -22,9 +23,9 @@ module.exports.getUsers = (req, res) => {
 
 // Get one user by ID
 module.exports.getUser = (req, res) => {
-  const { id } = req.params;
+  const { userId } = req.params;
 
-  User.findById(id)
+  User.findById(userId)
     .orFail()
     .then((user) => res.send({ data: user }))
     .catch((err) => {

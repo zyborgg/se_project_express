@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.use((req, res, next) => {
   req.user = {
-    _id: "5d8b8592978f8bd833ca8133", // paste the _id of the test user created in the previous step
+    _id: "69fe680d3abe94d46b085e6d", // paste the _id of the test user created in the previous step
   };
   next();
 });
@@ -21,7 +21,7 @@ const User = require("./routes/users");
 const ClothingItems = require("./routes/clothingItems");
 
 app.use("/users", User);
-app.use("/clothing-items", ClothingItems);
+app.use("/items", ClothingItems);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Requested resource not found" });

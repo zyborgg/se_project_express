@@ -1,3 +1,5 @@
+const User = require("../models/user");
+
 const ClothingItems = require("../models/clothingItem");
 
 const ERROR = require("../utils/errors");
@@ -20,15 +22,40 @@ module.exports.getClothingItems = (req, res) => {
 };
 
 // create new item
+// module.exports.createClothingItem = (req, res) => {
+//   console.log("req.body:", req.body);
+
+//   ClothingItems.create({
+//     name: req.body.name,
+//     weather: req.body.weather,
+//     imageUrl: req.body.imageUrl,
+//     owner: req.user._id,
+//   })
+//     .then((clothingItem) => res.send({ data: clothingItem }))
+//     .catch((err) => {
+//       console.error(err);
+//       if (err.name === "ValidationError") {
+//         return res
+//           .status(ERROR.ERROR_CODE_400)
+//           .send({ message: "Invalid data provided" });
+//       }
+//       return res
+//         .status(ERROR.ERROR_CODE_500)
+//         .send({ message: "An error has occurred on the server" });
+//     });
+// };
+
 module.exports.createClothingItem = (req, res) => {
-  console.log(req.user._id);
   ClothingItems.create({
     name: req.body.name,
     weather: req.body.weather,
     imageUrl: req.body.imageUrl,
     owner: req.user._id,
   })
-    .then((clothingItem) => res.send({ data: clothingItem }))
+    .then((clothingItem) => {
+      return ClothingItems.findById(clothingItem._id).populate("owner");
+    })
+    .then((populatedItem) => res.send({ data: populatedItem }))
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
@@ -42,14 +69,14 @@ module.exports.createClothingItem = (req, res) => {
     });
 };
 
-// delete item by id`
+// delete item by id
 module.exports.deleteClothingItem = (req, res) => {
-  const { itemId } = req.params;
+  const { id } = req.params;
 
-  ClothingItems.findByIdAndDelete(itemId)
+  ClothingItems.findByIdAndDelete(id)
     .orFail()
     .then(() => {
-      res.status(200).send({ message: "Item deleted successfully" });
+      return res.status(200).send({ message: "Item deleted successfully" });
     })
     .catch((err) => {
       console.error(err);
@@ -72,7 +99,7 @@ module.exports.deleteClothingItem = (req, res) => {
 // put like an item
 module.exports.likeClothingItem = (req, res) => {
   ClothingItems.findByIdAndUpdate(
-    req.params.itemId,
+    req.params.id,
     { $addToSet: { likes: req.user._id } },
     { new: true }
   )
@@ -99,9 +126,9 @@ module.exports.likeClothingItem = (req, res) => {
 };
 
 // dislike item
-module.exports.dislikeClothingItem = (req, res) =>
+module.exports.dislikeClothingItem = (req, res) => {
   ClothingItems.findByIdAndUpdate(
-    req.params.itemId,
+    req.params.id,
     { $pull: { likes: req.user._id } },
     { new: true }
   )
@@ -125,3 +152,4 @@ module.exports.dislikeClothingItem = (req, res) =>
         .status(ERROR.ERROR_CODE_500)
         .send({ message: "An error has occurred on the server" });
     });
+};
