@@ -8,6 +8,8 @@ const app = express();
 
 const ERROR = require("./utils/errors");
 
+const mainRouter = require("./routes/index");
+
 mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");
 app.use(express.json());
 
@@ -18,18 +20,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const User = require("./routes/users");
-
-const ClothingItems = require("./routes/clothingItems");
-
-app.use("/users", User);
-app.use("/items", ClothingItems);
-
-app.use((req, res) => {
-  res
-    .status(ERROR.ERROR_CODE_400)
-    .json({ message: "Requested resource not found" });
-});
+app.use("/", mainRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

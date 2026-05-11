@@ -27,8 +27,7 @@ module.exports.createClothingItem = (req, res) => {
     imageUrl: req.body.imageUrl,
     owner: req.user._id,
   })
-    .then((clothingItem) => ClothingItems.findById(clothingItem._id).populate("owner"))
-    .then((populatedItem) => res.send({ data: populatedItem }))
+    .then((clothingItem) => res.status(201).send({ data: clothingItem }))
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
@@ -48,7 +47,7 @@ module.exports.deleteClothingItem = (req, res) => {
 
   ClothingItems.findByIdAndDelete(id)
     .orFail()
-    .then(() => res.status(200).send({ message: "Item deleted successfully" }))
+    .then((clothingItem) => res.status(200).send(clothingItem))
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
@@ -75,8 +74,8 @@ module.exports.likeClothingItem = (req, res) => {
     { new: true }
   )
     .orFail()
-    .then(() => {
-      res.status(200).send({ message: "Item liked" });
+    .then((clothingItem) => {
+      res.status(200).send(clothingItem);
     })
     .catch((err) => {
       console.error(err);

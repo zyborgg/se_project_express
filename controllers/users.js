@@ -28,11 +28,6 @@ module.exports.getUser = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       console.error(err);
-      if (err.name === "CastError") {
-        return res
-          .status(ERROR.ERROR_CODE_400)
-          .send({ message: "Invalid user ID format" });
-      }
       if (err.name === "DocumentNotFoundError") {
         return res
           .status(ERROR.ERROR_CODE_404)
@@ -49,7 +44,7 @@ module.exports.createUser = (req, res) => {
   const { name, avatar } = req.body;
 
   User.create({ name, avatar })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
