@@ -18,6 +18,20 @@ const UserSchema = new mongoose.Schema({
       message: "You must enter a valid URL",
     },
   },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+    // select: false,
+  },
 });
+
+UserSchema.statics.findUserByCredentials = function (email, password) {
+  // logic goes here
+};
 
 module.exports = mongoose.model("User", UserSchema);

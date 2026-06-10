@@ -1,3 +1,4 @@
+// USER CONTROLLER
 const User = require("../models/user");
 
 const ERROR = require("../utils/errors");
@@ -47,9 +48,11 @@ module.exports.getUser = (req, res) => {
 
 // Create new user
 module.exports.createUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, avatar, email, password } = req.body;
 
-  User.create({ name, avatar })
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => User.create({ name, avatar, email, password: hash }))
     .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
       console.error(err);
@@ -58,6 +61,10 @@ module.exports.createUser = (req, res) => {
           .status(ERROR.ERROR_CODE_400)
           .send({ message: "Invalid data provided" });
       }
+      if (err.code === 11000)
+        return res
+          .status(ERROR.ERROR_CODE_409)
+          .send({ message: "email is not unique" });
       return res
         .status(ERROR.ERROR_CODE_500)
         .send({ message: "An error has occurred on the server" });

@@ -1,3 +1,4 @@
+// CLOTHING ITEMS CONTROLLER
 const ClothingItems = require("../models/clothingItem");
 
 const ERROR = require("../utils/errors");
