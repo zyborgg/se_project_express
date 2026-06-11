@@ -21,9 +21,8 @@ module.exports.getUsers = (req, res) => {
 };
 
 // Get one user by ID
-module.exports.getUser = (req, res) => {
-  const { userId } = req.params;
-  console.log(req.params);
+module.exports.getCurrentUser = (req, res) => {
+  const userId = req.user._id;
 
   User.findById(userId)
     .orFail()
@@ -65,6 +64,37 @@ module.exports.createUser = (req, res) => {
         return res
           .status(ERROR.ERROR_CODE_409)
           .send({ message: "email is not unique" });
+      return res
+        .status(ERROR.ERROR_CODE_500)
+        .send({ message: "An error has occurred on the server" });
+    });
+};
+
+// update existing user
+module.exports.updateProfile = (req, res) => {
+  const userId = req.user._id;
+  const { name, avatar } = req.body;
+  User.findByIdAndUpdate(
+    userId,
+    { name, avatar },
+    {
+      new: true,
+      runValidators: true,
+    }
+  )
+    .then((user) => res.status(200).send({ data: user }))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "ValidationError") {
+        return res
+          .status(ERROR.ERROR_CODE_400)
+          .send({ message: "Invalid data provided" });
+      }
+      if (err.name === "DocumentNotFoundError") {
+        return res
+          .status(ERROR.ERROR_CODE_404)
+          .send({ message: "User not found" });
+      }
       return res
         .status(ERROR.ERROR_CODE_500)
         .send({ message: "An error has occurred on the server" });

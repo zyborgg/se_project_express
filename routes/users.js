@@ -1,4 +1,9 @@
 // ROUTES
-const router = require("express").Router();
+const userRouter = require("express").Router();
+const { getCurrentUser } = require("../controllers/users");
+const { updateProfile } = require("../controllers/users");
 
-module.exports = router;
+userRouter.get("/users/me", getCurrentUser);
+userRouter.patch("/users/me", updateProfile);
+
+module.exports = userRouter;

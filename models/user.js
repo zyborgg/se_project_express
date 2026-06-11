@@ -26,12 +26,26 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    // select: false,
+    select: false,
   },
 });
 
-UserSchema.statics.findUserByCredentials = function (email, password) {
-  // logic goes here
+// UserSchema.statics.findUserByCredentials = function (email, password) {
+//   UserSchema.findOne({ email })
+//     .select("+password")
+//     .then((user) => {
+//       bcrypt.compare(password, user.password);
+//     });
+// };
+// REMEMBER TO COME BACK TO THIS
+UserSchema.statics.findUserByCredentials = async function (email, password) {
+  try {
+    const user = await this.findOne({ email: email })
+      .select("+password")
+      .bcrypt.compare(password, user.password);
+  } catch (err) {
+    console.error;
+  }
 };
 
 module.exports = mongoose.model("User", UserSchema);

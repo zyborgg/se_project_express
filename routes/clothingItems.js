@@ -1,5 +1,5 @@
 // ROUTES
-const router = require("express").Router();
+const itemRouter = require("express").Router();
 const {
   getClothingItems,
   createClothingItem,
@@ -8,10 +8,10 @@ const {
   dislikeClothingItem,
 } = require("../controllers/clothingItems");
 
-router.get("/", getClothingItems);
-router.post("/", createClothingItem);
-router.delete("/:id", deleteClothingItem);
-router.put("/:id/likes", likeClothingItem);
-router.delete("/:id/likes", dislikeClothingItem);
+itemRouter.get("/", getClothingItems);
+itemRouter.post("/", createClothingItem);
+itemRouter.delete("/:id", deleteClothingItem);
+itemRouter.put("/:id/likes", likeClothingItem);
+itemRouter.delete("/:id/likes", dislikeClothingItem);
 
-module.exports = router;
+module.exports = itemRouter;
