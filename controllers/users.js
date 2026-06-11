@@ -82,18 +82,20 @@ module.exports.updateProfile = (req, res) => {
       runValidators: true,
     }
   )
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => {
+      if (user === null) {
+        return res
+          .status(ERROR.ERROR_CODE_404)
+          .send({ message: "User not found" });
+      }
+      return res.status(200).send({ data: user });
+    })
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
         return res
           .status(ERROR.ERROR_CODE_400)
           .send({ message: "Invalid data provided" });
-      }
-      if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(ERROR.ERROR_CODE_404)
-          .send({ message: "User not found" });
       }
       return res
         .status(ERROR.ERROR_CODE_500)

@@ -30,21 +30,20 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-// UserSchema.statics.findUserByCredentials = function (email, password) {
-//   UserSchema.findOne({ email })
-//     .select("+password")
-//     .then((user) => {
-//       bcrypt.compare(password, user.password);
-//     });
-// };
-// REMEMBER TO COME BACK TO THIS
 UserSchema.statics.findUserByCredentials = async function (email, password) {
   try {
-    const user = await this.findOne({ email: email })
-      .select("+password")
-      .bcrypt.compare(password, user.password);
+    const user = await this.findOne({ email: email }).select("+password");
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      throw new Error("Incorrect Password");
+    } else {
+      return user;
+    }
   } catch (err) {
-    console.error;
+    console.error(err);
   }
 };
 
