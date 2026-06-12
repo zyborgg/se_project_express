@@ -5,10 +5,7 @@ const jwt = require("jsonwebtoken");
 const ERROR = require("../utils/errors");
 
 module.exports.login = (req, res) => {
-  User.findUserByCredentials({
-    email: req.body.email,
-    password: req.body.password,
-  })
+  User.findUserByCredentials(req.body.email, req.body.password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
@@ -21,6 +18,10 @@ module.exports.login = (req, res) => {
         return res
           .status(ERROR.ERROR_CODE_401)
           .send({ message: "Invalid Credentials" });
+      } else {
+        return res
+          .status(ERROR.ERROR_CODE_500)
+          .send({ message: "Internal Server Error" });
       }
     });
 };

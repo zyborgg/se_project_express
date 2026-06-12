@@ -3,6 +3,8 @@ const User = require("../models/user");
 
 const ERROR = require("../utils/errors");
 
+const bcrypt = require("bcryptjs");
+
 // Get all users
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -52,7 +54,11 @@ module.exports.createUser = (req, res) => {
   bcrypt
     .hash(password, 10)
     .then((hash) => User.create({ name, avatar, email, password: hash }))
-    .then((user) => res.status(201).send({ data: user }))
+    .then((user) => {
+      const userObject = JSON.parse(JSON.stringify(user));
+      delete userObject.password;
+      res.status(201).send({ data: userObject });
+    })
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
