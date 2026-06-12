@@ -3,7 +3,7 @@ const userRouter = require("express").Router();
 const { getCurrentUser } = require("../controllers/users");
 const { updateProfile } = require("../controllers/users");
 
-userRouter.get("/users/me", getCurrentUser);
-userRouter.patch("/users/me", updateProfile);
+userRouter.get("/me", getCurrentUser);
+userRouter.patch("/me", updateProfile);
 
 module.exports = userRouter;

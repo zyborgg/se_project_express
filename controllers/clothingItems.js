@@ -1,6 +1,5 @@
 // CLOTHING ITEMS CONTROLLER
 const ClothingItems = require("../models/clothingItem");
-const { findByIdAndDelete } = require("../models/user");
 
 const ERROR = require("../utils/errors");
 
@@ -50,19 +49,21 @@ module.exports.deleteClothingItem = (req, res) => {
   ClothingItems.findById(id)
     .orFail()
     .then((clothingItem) => {
-      if (clothingItem.owner.toString() === req.user._id) {
+      if (clothingItem.owner.equals(req.user._id)) {
         return ClothingItems.findByIdAndDelete(id);
-      } else {
-        return res
-          .status(ERROR.ERROR_CODE_403)
-          .send({ message: "Not Allowed" });
       }
+      throw new Error("Forbidden");
     })
     .then((deletedItem) => {
       res.status(200).send({ message: "Item Deleted Successfully" });
     })
     .catch((err) => {
       console.error(err);
+      if (err.message === "Forbidden") {
+        return res
+          .status(ERROR.ERROR_CODE_403)
+          .send({ message: "Not Allowed" });
+      }
       if (err.name === "CastError") {
         return res
           .status(ERROR.ERROR_CODE_400)
