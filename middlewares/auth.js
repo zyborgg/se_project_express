@@ -13,7 +13,7 @@ module.exports.auth = (req, res, next) => {
 
   try {
     const payload = jwt.verify(token, JWT_SECRET);
-    req.user = payload;
+    req.user = { _id: payload._id };
   } catch (err) {
     return res.status(ERROR.ERROR_CODE_401).json({ message: "Invalid token" });
   }
