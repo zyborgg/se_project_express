@@ -37,25 +37,23 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-UserSchema.statics.findUserByCredentials = async function (email, password) {
-  try {
-    const user = await this.findOne({ email }).select("+password");
-    if (!user) {
-      const err = new Error("Invalid email or password");
-      err.name = "CredentialFailure";
-      throw err;
-    }
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      const err = new Error("Invalid email or password");
-      err.name = "CredentialFailure";
-      throw err;
-    }
-    return user;
-  } catch (err) {
-    // Rethrow so callers (controllers) can handle CredentialFailure or other errors
+UserSchema.statics.findUserByCredentials = async function findUserByCredentials(
+  email,
+  password
+) {
+  const user = await this.findOne({ email }).select("+password");
+  if (!user) {
+    const err = new Error("Invalid email or password");
+    err.name = "CredentialFailure";
     throw err;
   }
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    const err = new Error("Invalid email or password");
+    err.name = "CredentialFailure";
+    throw err;
+  }
+  return user;
 };
 
 module.exports = mongoose.model("User", UserSchema);

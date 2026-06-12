@@ -54,7 +54,7 @@ module.exports.deleteClothingItem = (req, res) => {
       }
       throw new Error("Forbidden");
     })
-    .then((deletedItem) => {
+    .then(() => {
       res.status(200).send({ message: "Item Deleted Successfully" });
     })
     .catch((err) => {

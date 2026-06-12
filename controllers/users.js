@@ -1,9 +1,9 @@
 // USER CONTROLLER
+const bcrypt = require("bcryptjs");
+
 const User = require("../models/user");
 
 const ERROR = require("../utils/errors");
-
-const bcrypt = require("bcryptjs");
 
 // Get all users
 module.exports.getUsers = (req, res) => {

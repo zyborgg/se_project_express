@@ -1,7 +1,7 @@
 // LOGIN CONTROLLER
+const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
-const jwt = require("jsonwebtoken");
 const ERROR = require("../utils/errors");
 
 module.exports.login = (req, res) => {
@@ -11,12 +11,12 @@ module.exports.login = (req, res) => {
       .send({ message: "Invalid data provided" });
   }
 
-  User.findUserByCredentials(req.body.email, req.body.password)
+  return User.findUserByCredentials(req.body.email, req.body.password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      res.send({ token });
+      return res.send({ token });
     })
     .catch((err) => {
       console.error(err);

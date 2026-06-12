@@ -1,6 +1,6 @@
-const ERROR = require("../utils/errors");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
+const ERROR = require("../utils/errors");
 
 module.exports.auth = (req, res, next) => {
   const {
@@ -17,5 +17,5 @@ module.exports.auth = (req, res, next) => {
   } catch (err) {
     return res.status(ERROR.ERROR_CODE_401).json({ message: "Invalid token" });
   }
-  next();
+  return next();
 };

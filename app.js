@@ -1,15 +1,26 @@
 const express = require("express");
+
 const mongoose = require("mongoose");
-const { PORT = 3001 } = process.env;
-const app = express();
-const mainRouter = require("./routes/index");
-const { auth } = require("./middlewares/auth");
-const userRouter = require("./routes/users");
-const itemRouter = require("./routes/clothingItems");
-const { createUser } = require("./controllers/users");
-const { login } = require("./controllers/login");
-const { getClothingItems } = require("./controllers/clothingItems");
+
 const cors = require("cors");
+
+const { PORT = 3001 } = process.env;
+
+const app = express();
+
+const mainRouter = require("./routes/index");
+
+const { auth } = require("./middlewares/auth");
+
+const userRouter = require("./routes/users");
+
+const itemRouter = require("./routes/clothingItems");
+
+const { createUser } = require("./controllers/users");
+
+const { login } = require("./controllers/login");
+
+const { getClothingItems } = require("./controllers/clothingItems");
 
 mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");
 app.use(cors());
