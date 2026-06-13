@@ -30,6 +30,14 @@ app.post("/signup", createUser);
 app.post("/signin", login);
 app.get("/items", getClothingItems);
 
+// had to add this so the last endpoint would work
+app.use((req, res, next) => {
+  if (req.user && !req.user._id) {
+    req.user._id = req.user._id || req.user.id;
+  }
+  next();
+});
+
 // Auth middleware applied here
 app.use(auth);
 
