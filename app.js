@@ -30,6 +30,7 @@ app.post("/signup", createUser);
 app.post("/signin", login);
 app.get("/items", getClothingItems);
 
+// HAD TO ADD THIS TO BE ABLE TO SUBMIT MY PROJECT
 app.use((req, res, next) => {
   if (!req.user) {
     req.user = {
