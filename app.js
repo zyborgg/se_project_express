@@ -35,8 +35,10 @@ app.use(auth);
 
 // had to add this so the last endpoint would work
 app.use((req, res, next) => {
-  if (req.user && !req.user._id) {
-    req.user._id = req.user._id || req.user.id;
+  if (req.user) {
+    req.user = {
+      _id: req.user._id,
+    };
   }
   next();
 });
