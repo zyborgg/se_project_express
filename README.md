@@ -23,4 +23,4 @@ All requests passed testing
 - Nodemon
 - validator
 
-project completed entirely without using the videos!
+project pitch video link: https://www.loom.com/share/bb82e183d58547eba479b8ee794d8418
