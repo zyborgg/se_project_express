@@ -50,6 +50,11 @@ module.exports.getCurrentUser = (req, res) => {
 // Create new user
 module.exports.createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
+  if (!name || !email || !password) {
+    return res
+      .status(ERROR.ERROR_CODE_400)
+      .send({ message: "name, email, and password are required" });
+  }
 
   bcrypt
     .hash(password, 10)
