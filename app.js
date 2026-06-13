@@ -33,6 +33,14 @@ app.get("/items", getClothingItems);
 // Auth middleware applied here
 app.use(auth);
 
+// Set user ID as required
+app.use((req, res, next) => {
+  req.user = {
+    _id: req.user._id,
+  };
+  next();
+});
+
 // Protected routes (auth required)
 app.use("/", mainRouter);
 app.use("/users", userRouter);
