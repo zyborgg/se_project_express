@@ -56,15 +56,13 @@ module.exports.createUser = (req, res) => {
       .send({ message: "name, email, and password are required" });
   }
 
-  bcrypt
+  return bcrypt
     .hash(password, 10)
-    .then((hash) => User.create({ name, avatar, email, password: hash }));
-  return res
+    .then((hash) => User.create({ name, avatar, email, password: hash }))
     .then((user) => {
       const userObject = JSON.parse(JSON.stringify(user));
       delete userObject.password;
-      res.status(201).send({ data: userObject });
-      return res;
+      return res.status(201).send({ data: userObject });
     })
     .catch((err) => {
       console.error(err);
