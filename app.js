@@ -30,16 +30,6 @@ app.post("/signup", createUser);
 app.post("/signin", login);
 app.get("/items", getClothingItems);
 
-// HAD TO ADD THIS TO BE ABLE TO SUBMIT MY PROJECT
-// app.use((req, res, next) => {
-//   if (!req.user) {
-//     req.user = {
-//       _id: "5d8b8592978f8bd833ca8133",
-//     };
-//   }
-//   next();
-// });
-
 // Auth middleware applied here
 app.use(auth);
 
