@@ -50,7 +50,7 @@ module.exports.deleteClothingItem = (req, res) => {
     .orFail()
     .then((clothingItem) => {
       if (clothingItem.owner.equals(req.user._id)) {
-        return ClothingItems.findByIdAndDelete(id);
+        return ClothingItems.deleteOne();
       }
       throw new Error("Forbidden");
     })
