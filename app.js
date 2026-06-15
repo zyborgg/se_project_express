@@ -54,8 +54,6 @@ app.use(auth);
 
 // Protected routes (auth required)
 app.use("/", mainRouter);
-app.use("/users", userRouter);
-app.use("/items", itemRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
