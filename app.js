@@ -12,10 +12,6 @@ const mainRouter = require("./routes/index");
 
 const { auth } = require("./middlewares/auth");
 
-const userRouter = require("./routes/users");
-
-const itemRouter = require("./routes/clothingItems");
-
 const { createUser } = require("./controllers/users");
 
 const { login } = require("./controllers/login");

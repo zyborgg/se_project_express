@@ -1,7 +1,6 @@
 // ROUTES
 const itemRouter = require("express").Router();
 const {
-  getClothingItems,
   createClothingItem,
   deleteClothingItem,
   likeClothingItem,
