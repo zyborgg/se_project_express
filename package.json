@@ -22,10 +22,15 @@
   "type": "commonjs",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "lint": "npx eslint .",
     "start": "node app.js",
     "dev": "nodemon app.js"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ]
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -40,7 +45,10 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.10.2",
     "eslint-plugin-import": "^2.32.0",
+    "jest": "^30.4.2",
+    "mongodb-memory-server": "^11.2.0",
     "nodemon": "^3.1.14",
-    "prettier": "^2.8.8"
+    "prettier": "^2.8.8",
+    "supertest": "^7.2.2"
   }
 }

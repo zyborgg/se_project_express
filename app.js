@@ -18,15 +18,17 @@ const { login } = require("./controllers/login");
 
 const { getClothingItems } = require("./controllers/clothingItems");
 
-mongoose
-  .connect("mongodb://127.0.0.1:27017/wtwr_db")
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((err) => {
-    console.error("MongoDB connection error:", err);
-    process.exit(1);
-  });
+if (process.env.NODE_ENV !== "test") {
+  mongoose
+    .connect("mongodb://127.0.0.1:27017/wtwr_db")
+    .then(() => {
+      console.log("Connected to MongoDB");
+    })
+    .catch((err) => {
+      console.error("MongoDB connection error:", err);
+      process.exit(1);
+    });
+}
 
 app.use(cors());
 app.use(express.json());
@@ -51,6 +53,10 @@ app.use(auth);
 // Protected routes (auth required)
 app.use("/", mainRouter);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
