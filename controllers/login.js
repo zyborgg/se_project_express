@@ -2,31 +2,31 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
-const ERROR = require("../utils/errors");
 
-module.exports.login = (req, res) => {
-  if (!req.body.email || !req.body.password) {
-    return res
-      .status(ERROR.ERROR_CODE_400)
-      .send({ message: "Invalid data provided" });
+const BadRequestError = require("../errors/BadRequest");
+const UnauthorizedError = require("../errors/Unauthorized");
+
+module.exports.login = (req, res, next) => {
+  const { email, password } = req.body;
+
+  // Required fields
+  if (!email || !password) {
+    throw new BadRequestError("Email and password are required");
   }
 
-  return User.findUserByCredentials(req.body.email, req.body.password)
+  User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      return res.send({ token });
+
+      res.send({ token });
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "CredentialFailure") {
-        return res
-          .status(ERROR.ERROR_CODE_401)
-          .send({ message: "Invalid Credentials" });
+        next(new UnauthorizedError("Invalid credentials"));
+      } else {
+        next(err);
       }
-      return res
-        .status(ERROR.ERROR_CODE_500)
-        .send({ message: "Internal Server Error" });
     });
 };

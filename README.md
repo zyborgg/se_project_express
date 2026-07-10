@@ -24,3 +24,15 @@ All requests passed testing
 - validator
 
 project pitch video link: https://www.loom.com/share/bb82e183d58547eba479b8ee794d8418
+
+leaving this here from app cause previous project stages
+needed it in my project even though it was commented out?
+// HAD TO ADD THIS TO BE ABLE TO SUBMIT MY PROJECT
+// app.use((req, res, next) => {
+// if (!req.user) {
+// req.user = {
+// \_id: "5d8b8592978f8bd833ca8133",
+// };
+// }
+// next();
+// });

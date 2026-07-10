@@ -1,139 +1,108 @@
 // CLOTHING ITEMS CONTROLLER
 const ClothingItems = require("../models/clothingItem");
 
-const ERROR = require("../utils/errors");
+const BadRequestError = require("../errors/BadRequest");
+const ForbiddenError = require("../errors/Forbidden");
+const NotFoundError = require("../errors/NotFound");
 
 // get all items
-module.exports.getClothingItems = (req, res) => {
+module.exports.getClothingItems = (req, res, next) => {
   ClothingItems.find({})
     .then((clothingItems) => res.send({ data: clothingItems }))
     .catch((err) => {
       console.error(err);
       if (err.name === "TypeError") {
-        return res
-          .status(ERROR.ERROR_CODE_400)
-          .send({ message: "Invalid data provided" });
+        next(new BadRequestError("Invalid data provided"));
+      } else {
+        next(err);
       }
-      return res
-        .status(ERROR.ERROR_CODE_500)
-        .send({ message: "An error has occurred on the server" });
     });
 };
 
 // create new item
-module.exports.createClothingItem = (req, res) => {
+module.exports.createClothingItem = (req, res, next) => {
+  const { name, weather, imageUrl } = req.body;
+
+  if (!name || !weather || !imageUrl) {
+    throw new BadRequestError("name, weather, and image URL are required");
+  }
+
   ClothingItems.create({
-    name: req.body.name,
-    weather: req.body.weather,
-    imageUrl: req.body.imageUrl,
+    name,
+    weather,
+    imageUrl,
     owner: req.user._id,
   })
     .then((clothingItem) => res.status(201).send({ data: clothingItem }))
     .catch((err) => {
-      console.error(err);
       if (err.name === "ValidationError") {
-        return res
-          .status(ERROR.ERROR_CODE_400)
-          .send({ message: "Invalid data provided" });
+        next(new BadRequestError("Invalid data provided"));
+      } else {
+        next(err);
       }
-      return res
-        .status(ERROR.ERROR_CODE_500)
-        .send({ message: "An error has occurred on the server" });
     });
 };
 
 // delete item by id
-module.exports.deleteClothingItem = (req, res) => {
+module.exports.deleteClothingItem = (req, res, next) => {
   const { id } = req.params;
 
   ClothingItems.findById(id)
-    .orFail()
+    .orFail(() => new NotFoundError("Item not found"))
     .then((clothingItem) => {
-      if (clothingItem.owner.equals(req.user._id)) {
-        return ClothingItems.deleteOne({ _id: id });
+      if (!clothingItem.owner.equals(req.user._id)) {
+        throw new ForbiddenError("You cannot delete this item");
       }
-      throw new Error("Forbidden");
-    })
-    .then(() => {
-      res.status(200).send({ message: "Item Deleted Successfully" });
+
+      return clothingItem.deleteOne().then(() => {
+        res.send({ message: "Item deleted successfully" });
+      });
     })
     .catch((err) => {
-      console.error(err);
-      if (err.message === "Forbidden") {
-        return res
-          .status(ERROR.ERROR_CODE_403)
-          .send({ message: "Not Allowed" });
-      }
       if (err.name === "CastError") {
-        return res
-          .status(ERROR.ERROR_CODE_400)
-          .send({ message: "Invalid item ID format" });
+        next(new BadRequestError("Invalid item ID format"));
+      } else {
+        next(err);
       }
-      if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(ERROR.ERROR_CODE_404)
-          .send({ message: "Item not found" });
-      }
-      return res
-        .status(ERROR.ERROR_CODE_500)
-        .send({ message: "An error has occurred on the server" });
     });
 };
 
 // put like an item
-module.exports.likeClothingItem = (req, res) => {
+module.exports.likeClothingItem = (req, res, next) => {
   ClothingItems.findByIdAndUpdate(
     req.params.id,
     { $addToSet: { likes: req.user._id } },
     { new: true }
   )
-    .orFail()
+    .orFail(() => new NotFoundError("Item not found"))
     .then((clothingItem) => {
-      res.status(200).send(clothingItem);
+      res.send(clothingItem);
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
-        return res
-          .status(ERROR.ERROR_CODE_400)
-          .send({ message: "Invalid item ID format" });
+        next(new BadRequestError("Invalid item ID format"));
+      } else {
+        next(err);
       }
-      if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(ERROR.ERROR_CODE_404)
-          .send({ message: "Item not found" });
-      }
-      return res
-        .status(ERROR.ERROR_CODE_500)
-        .send({ message: "An error has occurred on the server" });
     });
 };
 
 // dislike item
-module.exports.dislikeClothingItem = (req, res) => {
+module.exports.dislikeClothingItem = (req, res, next) => {
   ClothingItems.findByIdAndUpdate(
     req.params.id,
     { $pull: { likes: req.user._id } },
     { new: true }
   )
-    .orFail()
+    .orFail(() => new NotFoundError("Item not found"))
     .then((updatedItem) => {
       res.status(200).send({ data: updatedItem });
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
-        return res
-          .status(ERROR.ERROR_CODE_400)
-          .send({ message: "Invalid item ID format" });
+        next(new BadRequestError("Invalid item ID format"));
+      } else {
+        next(err);
       }
-      if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(ERROR.ERROR_CODE_404)
-          .send({ message: "Item not found" });
-      }
-      return res
-        .status(ERROR.ERROR_CODE_500)
-        .send({ message: "An error has occurred on the server" });
     });
 };

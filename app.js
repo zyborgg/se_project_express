@@ -18,6 +18,8 @@ const { login } = require("./controllers/login");
 
 const { getClothingItems } = require("./controllers/clothingItems");
 
+const errorHandler = require("./middlewares/errorHandler");
+
 if (process.env.NODE_ENV !== "test") {
   mongoose
     .connect("mongodb://127.0.0.1:27017/wtwr_db")
@@ -37,21 +39,13 @@ app.post("/signup", createUser);
 app.post("/signin", login);
 app.get("/items", getClothingItems);
 
-// HAD TO ADD THIS TO BE ABLE TO SUBMIT MY PROJECT
-// app.use((req, res, next) => {
-//   if (!req.user) {
-//     req.user = {
-//       _id: "5d8b8592978f8bd833ca8133",
-//     };
-//   }
-//   next();
-// });
-
 // Auth middleware applied here
 app.use(auth);
 
 // Protected routes (auth required)
 app.use("/", mainRouter);
+
+app.use(errorHandler);
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
