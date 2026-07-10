@@ -20,6 +20,12 @@ const { getClothingItems } = require("./controllers/clothingItems");
 
 const errorHandler = require("./middlewares/errorHandler");
 
+const { errors } = require("celebrate");
+
+const { errorLogger, requestLogger } = require("./middlewares/logger");
+
+const routes = require("./routes");
+
 if (process.env.NODE_ENV !== "test") {
   mongoose
     .connect("mongodb://127.0.0.1:27017/wtwr_db")
@@ -35,16 +41,26 @@ if (process.env.NODE_ENV !== "test") {
 app.use(cors());
 app.use(express.json());
 
+app.use(requestLogger);
+
+// Public routes (no auth)
 app.post("/signup", createUser);
 app.post("/signin", login);
 app.get("/items", getClothingItems);
 
-// Auth middleware applied here
+// Apply auth AFTER public routes
 app.use(auth);
 
-// Protected routes (auth required)
-app.use("/", mainRouter);
+// Protected routes
+app.use(routes); // mainRouter is already inside routes/index.js
 
+// Error logging
+app.use(errorLogger);
+
+// Celebrate errors
+app.use(errors());
+
+// Centralized error handler
 app.use(errorHandler);
 
 if (process.env.NODE_ENV !== "test") {
