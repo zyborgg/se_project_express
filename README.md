@@ -23,16 +23,7 @@ All requests passed testing
 - Nodemon
 - validator
 
-project pitch video link: https://www.loom.com/share/bb82e183d58547eba479b8ee794d8418
+Deployed backend Domain: https://api.screamingturnips.jumpingcrab.com
+GitHub front end repo: https://github.com/zyborgg/se_project_react.git
 
-leaving this here from app cause previous project stages
-needed it in my project even though it was commented out?
-// HAD TO ADD THIS TO BE ABLE TO SUBMIT MY PROJECT
-// app.use((req, res, next) => {
-// if (!req.user) {
-// req.user = {
-// \_id: "5d8b8592978f8bd833ca8133",
-// };
-// }
-// next();
-// });
+project pitch video link: https://www.loom.com/share/e8221a29f01640f289cf9461fae64739
