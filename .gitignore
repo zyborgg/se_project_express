@@ -1,7 +1,6 @@
-# Logs
-logs
-*.log
-npm-debug.log*
+# logs
+.log
+npm-debug.log
 
 # Dependency directory
 node_modules
@@ -13,3 +12,4 @@ node_modules
 .DS_Store
 .idea
 .vscode
+.env

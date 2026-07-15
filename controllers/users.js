@@ -1,88 +1,73 @@
 // USER CONTROLLER
 const bcrypt = require("bcryptjs");
-
 const User = require("../models/user");
-
-const ERROR = require("../utils/errors");
+const BadRequestError = require("../errors/BadRequest");
+const UnauthorizedError = require("../errors/Unauthorized");
+const ForbiddenError = require("../errors/Forbidden");
+const NotFoundError = require("../errors/NotFound");
+const ConflictError = require("../errors/Conflict");
 
 // Get all users
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       console.error(err);
       if (err.name === "TypeError") {
-        return res
-          .status(ERROR.ERROR_CODE_400)
-          .send({ message: "Invalid data provided" });
+        next(new BadRequestError("Invalid data provided"));
+      } else {
+        next(err);
       }
-      return res
-        .status(ERROR.ERROR_CODE_500)
-        .send({ message: "An error has occurred on the server" });
     });
 };
 
 // Get one user by ID
-module.exports.getCurrentUser = (req, res) => {
+module.exports.getCurrentUser = (req, res, next) => {
   const userId = req.user._id;
 
   User.findById(userId)
-    .orFail()
-    .then((user) => res.status(200).send({ data: user }))
+    .orFail(() => new NotFoundError("User not found"))
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res
-          .status(ERROR.ERROR_CODE_400)
-          .send({ message: "Invalid user ID" });
+        next(new BadRequestError("Invalid user ID"));
+      } else {
+        next(err);
       }
-      if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(ERROR.ERROR_CODE_404)
-          .send({ message: "User not found" });
-      }
-      return res
-        .status(ERROR.ERROR_CODE_500)
-        .send({ message: "An error has occurred on the server" });
     });
 };
 
 // Create new user
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
+
   if (!name || !email || !password) {
-    return res
-      .status(ERROR.ERROR_CODE_400)
-      .send({ message: "name, email, and password are required" });
+    throw new BadRequestError("name, email, and password are required");
   }
 
-  return bcrypt
+  bcrypt
     .hash(password, 10)
     .then((hash) => User.create({ name, avatar, email, password: hash }))
     .then((user) => {
-      const userObject = JSON.parse(JSON.stringify(user));
+      const { password, ...userObject } = user.toObject();
       delete userObject.password;
-      return res.status(201).send({ data: userObject });
+
+      res.status(201).send({ data: userObject });
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "ValidationError") {
-        return res
-          .status(ERROR.ERROR_CODE_400)
-          .send({ message: "Invalid data provided" });
+        next(new BadRequestError("Invalid data provided"));
+      } else if (err.code === 11000) {
+        next(new ConflictError("email is not unique"));
+      } else {
+        next(err);
       }
-      if (err.code === 11000)
-        return res
-          .status(ERROR.ERROR_CODE_409)
-          .send({ message: "email is not unique" });
-      return res
-        .status(ERROR.ERROR_CODE_500)
-        .send({ message: "An error has occurred on the server" });
     });
 };
 
 // update existing user
-module.exports.updateProfile = (req, res) => {
+module.exports.updateProfile = (req, res, next) => {
   const userId = req.user._id;
   const { name, avatar } = req.body;
   User.findByIdAndUpdate(
@@ -94,22 +79,16 @@ module.exports.updateProfile = (req, res) => {
     }
   )
     .then((user) => {
-      if (user === null) {
-        return res
-          .status(ERROR.ERROR_CODE_404)
-          .send({ message: "User not found" });
+      if (!user) {
+        throw new NotFoundError("User not found");
       }
-      return res.status(200).send({ data: user });
+      res.send({ data: user });
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "ValidationError") {
-        return res
-          .status(ERROR.ERROR_CODE_400)
-          .send({ message: "Invalid data provided" });
+        next(new BadRequestError("Invalid data provided"));
+      } else {
+        next(err);
       }
-      return res
-        .status(ERROR.ERROR_CODE_500)
-        .send({ message: "An error has occurred on the server" });
     });
 };

@@ -23,4 +23,7 @@ All requests passed testing
 - Nodemon
 - validator
 
-project pitch video link: https://www.loom.com/share/bb82e183d58547eba479b8ee794d8418
+Deployed backend Domain: https://api.screamingturnips.jumpingcrab.com
+GitHub front end repo: https://github.com/zyborgg/se_project_react.git
+
+project pitch video link: https://www.loom.com/share/e8221a29f01640f289cf9461fae64739
