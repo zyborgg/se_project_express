@@ -67,3 +67,10 @@ module.exports.validateId = celebrate({
     }),
   }),
 });
+
+module.exports.validateUpdateProfile = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    avatar: Joi.string().uri(),
+  }),
+});

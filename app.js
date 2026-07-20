@@ -6,25 +6,15 @@ const mongoose = require("mongoose");
 
 const cors = require("cors");
 
+const { errors } = require("celebrate");
+
 const { PORT = 3001 } = process.env;
 
 const app = express();
 
-const mainRouter = require("./routes/index");
-
-const { auth } = require("./middlewares/auth");
-
-const { createUser } = require("./controllers/users");
-
-const { login } = require("./controllers/login");
-
-const { getClothingItems } = require("./controllers/clothingItems");
+const { errorLogger, requestLogger } = require("./middlewares/logger");
 
 const errorHandler = require("./middlewares/errorHandler");
-
-const { errors } = require("celebrate");
-
-const { errorLogger, requestLogger } = require("./middlewares/logger");
 
 const routes = require("./routes");
 
@@ -51,16 +41,8 @@ app.get("/crash-test", () => {
   }, 0);
 });
 
-// Public routes (no auth)
-app.post("/signup", createUser);
-app.post("/signin", login);
-app.get("/items", getClothingItems);
-
-// Apply auth AFTER public routes
-app.use(auth);
-
 // Protected routes
-app.use(routes); // mainRouter is already inside routes/index.js
+app.use(routes);
 
 // Error logging
 app.use(errorLogger);
