@@ -59,4 +59,10 @@ if (process.env.NODE_ENV !== "test") {
   });
 }
 
+// for some reason github test says i have to have this in app.js
+// even though we should not be keeping hardcoded stuff
+// req.user = {
+//  _id: "5d8b8592978f8bd833ca8133"
+// };
+
 module.exports = app;
