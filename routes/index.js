@@ -4,6 +4,8 @@ const clothingItemRouter = require("./clothingItems");
 
 const { createUser } = require("../controllers/users");
 const { login } = require("../controllers/login");
+const { getClothingItems } = require("../controllers/clothingItems");
+const { auth } = require("../middlewares/auth");
 
 const {
   validateUserBody,
@@ -14,7 +16,8 @@ const NotFoundError = require("../errors/NotFound");
 
 router.post("/signup", validateUserBody, createUser);
 router.post("/signin", validateLoginBody, login);
-
+router.get("/items", getClothingItems);
+router.use(auth);
 router.use("/users", userRouter);
 router.use("/items", clothingItemRouter);
 
