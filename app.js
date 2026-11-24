@@ -8,7 +8,10 @@ const cors = require("cors");
 
 const { errors } = require("celebrate");
 
-const { PORT = 3001 } = process.env;
+const {
+  PORT = 3001,
+  MONGODB_URI = "mongodb://127.0.0.1:27017/wtwr_db",
+} = process.env;
 
 const app = express();
 
@@ -20,7 +23,7 @@ const routes = require("./routes");
 
 if (process.env.NODE_ENV !== "test") {
   mongoose
-    .connect("mongodb://127.0.0.1:27017/wtwr_db")
+    .connect(MONGODB_URI)
     .then(() => {
       console.log("Connected to MongoDB");
     })
